@@ -1,0 +1,29 @@
+<service>
+	<serviceName>sms</serviceName>
+	<serviceDescription><![CDATA[ Envia un SMS a cualquier celular en el mundo ]]></serviceDescription>
+	<creatorEmail>salvi.pascual@gmail.com</creatorEmail>
+	<serviceCategory>comunicaciones</serviceCategory>
+	<serviceUsage>
+		<![CDATA[
+			Escriba un nuevo email a {APRETASTE_EMAIL} y en el asunto ponga la palabra SMS seguida del numero de telefono celular.
+			El numero de telefono debe estar precedido del sufijo o codigo del pais. En el cuerpo del email escriba el texto a enviar.
+
+			Por ejemplo:
+			Para: {APRETASTE_EMAIL}
+			Asunto: SMS 1999222333
+			Cuerpo: Hola que tal
+			
+			Recibir&aacute; un email de confirmacion de entrega
+		]]>
+	</serviceUsage>
+	<database>
+		<table name="messages">
+			<column type="varchar" length="255">id</column>
+			<column type="timestamp">sent_date</column>
+			<column type="varchar" length="255">email</column>
+			<column type="varchar" length="255">cellphone</column>
+			<column type="varchar" length="255">message</column>
+			<column type="float">discount</column>
+		</table>
+	</database>
+</service>
