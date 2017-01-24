@@ -11,13 +11,18 @@ class Sms extends Service
 	 */
 	public function _main(Request $request)
 	{
+		// get the size of the pool from the configs file
+		$di = \Phalcon\DI\FactoryDefault::getDefault();
+		$poolsize = $di->get('config')['smsapi']['poolsize'];
+
 		// check the total sent won't go over the pool
 		$totalSMSThisWeek = $this->getTotalSMSThisWeek();
-		if($totalSMSThisWeek > 500)
+
+		if($totalSMSThisWeek >= $poolsize)
 		{
 			$response = new Response();
-			$response->setResponseSubject("El banco se ha quedado sin SMS esta semana");
-			$response->createFromText("Cada mes el banco ");
+			$response->setResponseSubject("El banco semanal se ha vaciado");
+			$response->createFromText("<p>Sentimos decir que su SMS no fue enviado.</p><p>Como usted seguramente sabe, cada semana regalamos cientos de creditos de Apretate gratuitamente, pero tenemos que pagar por cada SMS que mandamos. Para seguir ofreciendo este servicio gratuitamente, cada semana creamos un banco de $poolsize SMS gratis, y esta numero ya se ha agotado. El proximo Lunes volvera el banco a llenarse y usted podra seguir manando SMS.</p><p>Disculpe las molestias.</p>");
 			return $response;
 		}
 
@@ -103,6 +108,7 @@ class Sms extends Service
 			"credit" => $credit - $discount,
 			"msg" => $text,
 			"bodyextra" => $textExtra,
+			"poolleft" => $poolsize - $totalSMSThisWeek,
 			"cellnumber" => "+$code$number");
 
 		// send the OK email
@@ -160,10 +166,18 @@ class Sms extends Service
 		// call the api and send the SMS
 		$URL = "http://api.smsacuba.com/api10allcountries.php?";
 		$URL .= "login=" . $login . "&password=" . $password . "&prefix=" . $prefix . "&number=" . $number . "&sender=" . $sender . "&msg=" . urlencode($message);
-		$response = strtolower(trim(file_get_contents($URL)));
+		$response = strtoupper(trim(file_get_contents($URL)));
+
+		// send an alert if the balance is depleted
+		if($response == 'SALDO INSUFICIENTE')
+		{
+			$alert = new Alert();
+			$alert->createAlert("Balance depleted on the SMS provider", "URGENT");
+			return false;
+		}
 
 		// check if the SMS was sent correctly
-		if($response != 'sms enviado') return false;
+		if($response != 'SMS ENVIADO') return false;
 
 		// if the message was sent, save into the database
 		$message = str_replace("'", "", $message);
@@ -228,28 +242,6 @@ class Sms extends Service
 	{
 		include_once $this->pathToService . "/codes.php";
 		return $countryCodes;
-	}
-
-	/**
-	 * Check the credit left on the provider
-	 *
-	 * @author Kuma
-	 */
-	private function getCredit()
-	{
-		// access the credentials from the config file
-		$di = \Phalcon\DI\FactoryDefault::getDefault();
-		$login = $di->get('config')['smsapi']['login'];
-		$password = $di->get('config')['smsapi']['password'];
-
-		// contact the service and get the number
-		$URL = "http://api.smsacuba.com/saldo.php?";
-		$URL .= "login=" . $login . "&password=" . $password;
-		$r = file_get_contents($URL);
-
-		// return number of credits left
-		if($r !== false) return $r * 1;
-		return 0;
 	}
 
 	/**
