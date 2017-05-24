@@ -171,8 +171,7 @@ class Sms extends Service
 		// send an alert if the balance is depleted
 		if($response == 'SALDO INSUFICIENTE')
 		{
-			$alert = new Alert();
-			$alert->createAlert("Balance depleted on the SMS provider", "URGENT");
+			$this->utils->createAlert("Balance depleted on the SMS provider", "ERROR");
 			return false;
 		}
 
