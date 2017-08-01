@@ -26,6 +26,15 @@ class Sms extends Service
 			return $response;
 		}
 
+		// do not allow empty sms
+		if(empty($request->query))
+		{
+			$response = new Response();
+			$response->setResponseSubject("A que numero desea mandar?");
+			$response->createFromTemplate("home.tpl", array());
+			return $response;
+		}
+
 		// get the person Object of the email
 		$email = $request->email;
 		$person = $this->utils->getPerson($email);

@@ -1,6 +1,6 @@
 <service>
 	<serviceName>sms</serviceName>
-	<serviceDescription>Envia un SMS a cualquier celular en el mundo</serviceDescription>
+	<serviceDescription>Envia un SMS a cualquier celular en Cuba y el mundo</serviceDescription>
 	<creatorEmail>salvi@apretaste.com</creatorEmail>
 	<serviceCategory>comunicaciones</serviceCategory>
 	<serviceUsage>
