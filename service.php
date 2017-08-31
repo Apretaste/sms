@@ -17,7 +17,6 @@ class Sms extends Service
 
 		// check the total sent won't go over the pool
 		$totalSMSThisWeek = $this->getTotalSMSThisWeek();
-
 		if($totalSMSThisWeek >= $poolsize)
 		{
 			$response = new Response();
@@ -30,6 +29,7 @@ class Sms extends Service
 		if(empty($request->query))
 		{
 			$response = new Response();
+			$response->setCache();
 			$response->setResponseSubject("A que numero desea mandar?");
 			$response->createFromTemplate("home.tpl", array());
 			return $response;
@@ -142,6 +142,7 @@ class Sms extends Service
 
 		// create the response
 		$response = new Response();
+		$response->setCache();
 		$response->setResponseSubject("Codigos internacionales");
 		$response->createFromTemplate("codes.tpl", array("codes" => $codes));
 		return $response;
