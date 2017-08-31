@@ -175,7 +175,7 @@ class Sms extends Service
 
 		// call the api and send the SMS
 		$URL = "http://api.smsacuba.com/api10allcountries.php?";
-		$URL .= "login=" . $login . "&password=" . $password . "&prefix=" . $prefix . "&number=" . $number . "&sender=" . $sender . "&msg=" . urlencode($message);
+		$URL .= "login=" . $login . "&password=" . $password . "&prefix=" . $prefix . "&number=" . $number . "&sender=apretaste" . $sender . "&msg=" . urlencode($message);
 		$response = strtoupper(trim(file_get_contents($URL)));
 
 		// send an alert if the balance is depleted
@@ -186,7 +186,7 @@ class Sms extends Service
 		}
 
 		// check if the SMS was sent correctly
-		if($response != 'SMS ENVIADO') return false;
+		if(stripos($response, 'SMS ENVIADO')===false) return false;
 
 		// if the message was sent, save into the database
 		$message = str_replace("'", "", $message);
