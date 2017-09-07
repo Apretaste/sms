@@ -98,7 +98,7 @@ class Sms extends Service
 		{
 			$response = new Response();
 			$response->setResponseSubject("Falta el texto del SMS");
-			$response->createFromText("Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje en el cuerpo del email");
+			$response->createFromText("Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
 			return $response;
 		}
 
