@@ -49,9 +49,9 @@ class Sms extends Service
 			return $response;
 		}
 
-		// clean the number passed by the user
-		$number = $request->query;
-		$number = preg_replace('/[^0-9.]+/', '', $number);
+		// get the number and clean it
+		$pieces = explode(" ", $request->query);
+		$number = isset($pieces[0]) ? preg_replace('/[^0-9.]+/', '', $pieces[0]) : "";
 		$parts = $this->splitNumber($number);
 
 		// message if the number passed is incorrect
@@ -79,8 +79,10 @@ class Sms extends Service
 			return $response;
 		}
 
-		// clean the body
-		$text = $request->body;
+		// clean the text from the subject
+		unset($pieces[0]);
+		$text = implode(" ", $pieces);
+		if(empty($text)) $text = $request->body;
 		$text = str_replace("\n", " ", $text);
 		$text = str_replace("\r", " ", $text);
 		$text = str_replace("  ", " ", $text);
@@ -92,7 +94,7 @@ class Sms extends Service
 		$text = substr(trim($text), 0, 160); // split message
 
 		// send an error if the message text is missing
-		if(trim($text) == "")
+		if(empty($text))
 		{
 			$response = new Response();
 			$response->setResponseSubject("Falta el texto del SMS");
