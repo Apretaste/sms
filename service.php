@@ -1,6 +1,6 @@
 <?php
 
-class Sms extends Service
+class Service
 {
 	/**
 	 * Function executed when the service is called
@@ -19,20 +19,21 @@ class Sms extends Service
 		$totalSMSThisWeek = $this->getTotalSMSThisWeek();
 		if($totalSMSThisWeek >= $poolsize)
 		{
-			$response = new Response();
-			$response->setResponseSubject("El banco semanal se ha vaciado");
-			$response->createFromText("<p>Sentimos decir que su SMS no fue enviado.</p><p>Como usted seguramente sabe, cada semana regalamos cientos de creditos de Apretate gratuitamente, pero tenemos que pagar por cada SMS que mandamos. Para seguir ofreciendo este servicio gratuitamente, cada semana creamos un banco de $poolsize SMS gratis, y esta numero ya se ha agotado. El proximo Lunes volvera el banco a llenarse y usted podra seguir manando SMS.</p><p>Disculpe las molestias.</p>");
-			return $response;
+			$content = [
+				"header"=>"Su SMS no fue enviado",
+				"icon"=>"sentiment_very_dissatisfied",
+				"text" => "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $poolsize SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
+				"button" => ["href"=>"PIROPAZO EDITAR", "caption"=>"Editar perfil"]];
+
+			$response->setLayout('piropazo.ejs');
+			return $response->setTemplate('message.ejs', $content);
 		}
 
 		// do not allow empty sms
 		if(empty($request->query))
 		{
-			$response = new Response();
 			$response->setCache();
-			$response->setResponseSubject("A que numero desea mandar?");
-			$response->createFromTemplate("home.tpl", array());
-			return $response;
+			$response->setTemplate("home.ejs", []);
 		}
 
 		// get the person Object of the email
@@ -43,10 +44,7 @@ class Sms extends Service
 		if(isset($person->credit)) $credit = $person->credit;
 		else
 		{
-			$response = new Response();
-			$response->setResponseSubject("Credito insuficiente");
 			$response->createFromText("Su SMS no ha sido enviado porque su credito actual es insuficiente.");
-			return $response;
 		}
 
 		// get the number and clean it
@@ -57,10 +55,7 @@ class Sms extends Service
 		// message if the number passed is incorrect
 		if($parts === false)
 		{
-			$response = new Response();
-			$response->setResponseSubject("Numero de celular incorrecto");
 			$response->createFromText("No reconocemos el numero de celular");
-			return $response;
 		}
 
 		// get the final country code and number
@@ -73,10 +68,7 @@ class Sms extends Service
 		// message is the user has not enought credit
 		if($credit < $discount)
 		{
-			$response = new Response();
-			$response->setResponseSubject("SMS: Credito insuficiente");
 			$response->createFromText("Su credito actual es $credit y es insuficiente para enviar el SMS. Usted necesita $discount.");
-			return $response;
 		}
 
 		// clean the text from the subject
@@ -96,10 +88,7 @@ class Sms extends Service
 		// send an error if the message text is missing
 		if(empty($text))
 		{
-			$response = new Response();
-			$response->setResponseSubject("Falta el texto del SMS");
 			$response->createFromText("Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
-			return $response;
 		}
 
 		// send the SMS
@@ -108,10 +97,7 @@ class Sms extends Service
 		// ensure the sms was sent correctly
 		if( ! $sent)
 		{
-			$response = new Response();
-			$response->setResponseSubject("El SMS no se pudo enviar");
 			$response->createFromText("El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
-			return $response;
 		}
 
 		// prepare info to be sent to the view
@@ -124,9 +110,7 @@ class Sms extends Service
 
 		// send the OK email
 		$response = new Response();
-		$response->setResponseSubject("SMS enviado correctamente");
-		$response->createFromTemplate("basic.tpl", $responseContent);
-		return $response;
+		$response->setTemplate("basic.ejs", $responseContent);
 	}
 
 	/**
@@ -145,9 +129,7 @@ class Sms extends Service
 		// create the response
 		$response = new Response();
 		$response->setCache();
-		$response->setResponseSubject("Codigos internacionales");
-		$response->createFromTemplate("codes.tpl", array("codes" => $codes));
-		return $response;
+		$response->setTemplate("codes.ejs", array("codes" => $codes));
 	}
 
 	/**
