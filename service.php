@@ -1,6 +1,6 @@
 <?php
 
-class Service
+class SmsService extends ApretasteService
 {
 
   /**
@@ -8,56 +8,59 @@ class Service
    *
    * @param Request
    *
-   * @return Response
+   * @return void
    * @author Kuma
    */
-  public function _main(Request $request)
+  public function _main()
   {
     // get the size of the pool from the configs file
-    $di = \Phalcon\DI\FactoryDefault::getDefault();
-    $poolsize = $di->get('config')['smsapi']['poolsize'];
+    $pool_size = $this->di()->get('config')['smsapi']['poolsize'];
 
     // check the total sent won't go over the pool
     $totalSMSThisWeek = $this->getTotalSMSThisWeek();
-    if ($totalSMSThisWeek >= $poolsize) {
+    if ($totalSMSThisWeek >= $pool_size) {
       $content = [
         "header" => "Su SMS no fue enviado",
         "icon"   => "sentiment_very_dissatisfied",
-        "text"   => "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $poolsize SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
+        "text"   => "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $pool_size SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
         "button" => ["href" => "PIROPAZO EDITAR", "caption" => "Editar perfil"],
       ];
 
-      $this->response->setLayout('piropazo.ejs');
-
-      return $this->response->setTemplate('message.ejs', $content);
+      $this->response->setLayout('sms.ejs');
+      $this->response->setTemplate('message.ejs', $content);
+      return;
     }
 
     // do not allow empty sms
-    if (empty($request->query)) {
+    if (empty($this->request->input->data->number)) {
       $this->response->setCache();
       $this->response->setTemplate("home.ejs", []);
     }
 
     // get the person Object of the email
-    $email = $request->email;
-    $person = $this->utils->getPerson($email);
+    $email = $this->request->email;
+    $person = Utils::getPerson($email);
 
     // message is the user has zero credit
     if (isset($person->credit)) {
       $credit = $person->credit;
     }
     else {
-      $this->response->createFromText("Su SMS no ha sido enviado porque su credito actual es insuficiente.");
+      $this->simpleMessage("SMS no enviado", "Su SMS no ha sido enviado porque su credito actual es insuficiente.");
+      return;
     }
 
     // get the number and clean it
-    $pieces = explode(" ", $request->query);
+    $pieces = explode(" ", $this->request->input->data->query);
     $number = isset($pieces[0]) ? preg_replace('/[^0-9.]+/', '', $pieces[0]) : "";
     $parts = $this->splitNumber($number);
 
     // message if the number passed is incorrect
     if ($parts === false) {
-      $this->response->createFromText("No reconocemos el numero de celular");
+      $this->simpleMessage("No reconocemos el n&uacute;mero de celular",
+        "Verifique el n&uacute;mero de celular que introdujo. Si el problema persiste contacte con el soporte t&eacute;cnico.");
+
+      return;
     }
 
     // get the final country code and number
@@ -69,14 +72,14 @@ class Service
 
     // message is the user has not enought credit
     if ($credit < $discount) {
-      $this->response->createFromText("Su credito actual es $credit y es insuficiente para enviar el SMS. Usted necesita $discount.");
+      $this->simpleMessage("Cr&eacute;dito insuficiente", "Su credito actual es $credit y es insuficiente para enviar el SMS. Usted necesita $discount.");
     }
 
     // clean the text from the subject
     unset($pieces[0]);
     $text = implode(" ", $pieces);
     if (empty($text)) {
-      $text = $request->body;
+      $text = $this->request->input->data->text;
     }
     $text = str_replace("\n", " ", $text);
     $text = str_replace("\r", " ", $text);
@@ -90,15 +93,22 @@ class Service
 
     // send an error if the message text is missing
     if (empty($text)) {
-      $this->response->createFromText("Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
+      $this->simpleMessage("Mensaje vac&iacute;o", "Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
     }
 
     // send the SMS
-    $sent = $this->sendSMS($code, $number, $email, $text, $discount);
+    $sent = (new SMS($number, $text))->send();
+    $message = str_replace("'", "", $text);
+    $connection = new Connection();
+    $connection->deepQuery("
+			START TRANSACTION;
+			UPDATE person SET credit = credit - $discount WHERE email='$email';
+			INSERT INTO _sms_messages(person_id, `email`,`code`,`number`,`text`,`price`) VALUES ('{$this->request->person->email}', '{$this->request->person->email}','$code','$number','$message','$discount');
+			COMMIT;");
 
     // ensure the sms was sent correctly
     if (!$sent) {
-      $this->response->createFromText("El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
+      $this->simpleMessage("SMS no enviado", "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
     }
 
     // prepare info to be sent to the view
@@ -106,7 +116,7 @@ class Service
       "credit"     => $credit - $discount,
       "msg"        => $text,
       "bodyextra"  => $textExtra,
-      "poolleft"   => $poolsize - $totalSMSThisWeek,
+      "poolleft"   => $pool_size - $totalSMSThisWeek,
       "cellnumber" => "+$code$number",
     ];
 
@@ -148,71 +158,11 @@ class Service
   }
 
   /**
-   * Send an SMS using the API
-   *
-   * @author Kuma
-   */
-  private function sendSMS($prefix, $number, $sender, $message, $cost)
-  {
-    $contactos = json_encode(["nuevos" => "$number"]);
-    $data = [
-      "token"     => "eecf71cf111047d56047f4af100512cda89687cbad7a7f569e0a7e05f9a65a2f",
-      "mensaje"   => $message,
-      "ruta"      => "9",
-      "pais"      => "53",
-      "contactos" => $contactos,
-    ];
-    $url = "https://www.freesmscuba.com/index.php/api/createpub";
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:28.0) Gecko/20100101 Firefox/28.0");
-    curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($curl);
-
-    if ($response === false) {
-      $response = curl_error($curl);
-    }
-
-    // cierra la conexión
-    curl_close($curl);
-
-    $responseObj = json_decode($response);
-    if ($responseObj->status !== 1) {
-      return false;
-    }
-
-    // send an alert if the balance is depleted
-    /*if ($response == 'SALDO INSUFICIENTE') {
-      $this->utils->createAlert("Balance depleted on the SMS provider", "ERROR");
-
-      return false;
-    }
-
-    // check if the SMS was sent correctly
-    if (stripos($response, 'SMS ENVIADO') === false) {
-      return false;
-    }
-*/
-    // if the message was sent, save into the database
-    $message = str_replace("'", "", $message);
-    $connection = new Connection();
-    $connection->deepQuery("
-			START TRANSACTION;
-			UPDATE person SET credit = credit - $cost WHERE email='$sender';
-			INSERT INTO _sms_messages(`email`,`code`,`number`,`text`,`price`) VALUES ('$sender','$prefix','$number','$message','$cost');
-			COMMIT;");
-
-    return true;
-  }
-
-  /**
    * Split cell number between country code and number
    *
    * @param string $number
    *
-   * @return array
+   * @return array | bool
    */
   private function splitNumber($number)
   {
@@ -224,12 +174,15 @@ class Service
     if (isset($number[1]) && substr($number, 0, 2) == '00') {
       $number = substr($number, 2);
     }
+
     if (isset($number[0]) && $number[0] == '0') {
       $number = substr($number, 1);
     }
+
     if (isset($number[0]) && $number[0] == '0') {
       $number = substr($number, 1);
     }
+
     if (strlen($number) == '8' && $number[0] == '5') {
       $code = 53;
     } // to cuba
@@ -265,9 +218,7 @@ class Service
    */
   private function getCountryCodes()
   {
-    include_once $this->pathToService . "/codes.php";
-
-    return $countryCodes;
+    return require __DIR__ . "/codes.php";
   }
 
   /**
@@ -284,8 +235,7 @@ class Service
     $lastDayOfTheWeek = date('Y-m-d H:i:s', strtotime('+6 days', $lastMondayTime));
 
     // get the number of messages from the database
-    $connection = new Connection();
-    $total = $connection->deepQuery("
+    $total = q("
 			SELECT COUNT(id) as total
 			FROM _sms_messages
 			WHERE sent BETWEEN '$firstDayOfTheWeek' AND '$lastDayOfTheWeek'");

@@ -1,6 +1,6 @@
 <?php
 
-$countryCodes = [
+return [
 	"2449" => "Angola",
 	"3556" => "Albania",
 	"1264" => "Anguila",
