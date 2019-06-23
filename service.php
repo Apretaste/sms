@@ -37,13 +37,9 @@ class SmsService extends ApretasteService
       $this->response->setTemplate("home.ejs", []);
     }
 
-    // get the person Object of the email
-    $email = $this->request->email;
-    $person = Utils::getPerson($email);
-
     // message is the user has zero credit
-    if (isset($person->credit)) {
-      $credit = $person->credit;
+    if (isset($this->request->person->credit)) {
+      $credit = $this->request->person->credit;
     }
     else {
       $this->simpleMessage("SMS no enviado", "Su SMS no ha sido enviado porque su credito actual es insuficiente.");
