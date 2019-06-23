@@ -28,6 +28,7 @@ class SmsService extends ApretasteService
 
       $this->response->setLayout('sms.ejs');
       $this->response->setTemplate('message.ejs', $content);
+
       return;
     }
 
@@ -43,11 +44,12 @@ class SmsService extends ApretasteService
     }
     else {
       $this->simpleMessage("SMS no enviado", "Su SMS no ha sido enviado porque su credito actual es insuficiente.");
+
       return;
     }
 
     // get the number and clean it
-     $parts = $this->splitNumber($this->request->input->data->number);
+    $parts = $this->splitNumber($this->request->input->data->number);
 
     // message if the number passed is incorrect
     if ($parts === false) {
