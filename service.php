@@ -74,9 +74,6 @@ class SmsService extends ApretasteService
 
     // clean the text from the subject
     $text = $this->request->input->data->message;
-    if (empty($text)) {
-      $text = $this->request->input->data->text;
-    }
     $text = str_replace("\n", " ", $text);
     $text = str_replace("\r", " ", $text);
     $text = str_replace("  ", " ", $text);
