@@ -73,7 +73,7 @@ class SmsService extends ApretasteService
     }
 
     // clean the text from the subject
-    $text = $this->request->data->message;
+    $text = $this->request->input->data->message;
     if (empty($text)) {
       $text = $this->request->input->data->text;
     }
