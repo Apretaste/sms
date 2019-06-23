@@ -27,15 +27,15 @@ class Service
         "button" => ["href" => "PIROPAZO EDITAR", "caption" => "Editar perfil"],
       ];
 
-      $response->setLayout('piropazo.ejs');
+      $this->response->setLayout('piropazo.ejs');
 
-      return $response->setTemplate('message.ejs', $content);
+      return $this->response->setTemplate('message.ejs', $content);
     }
 
     // do not allow empty sms
     if (empty($request->query)) {
-      $response->setCache();
-      $response->setTemplate("home.ejs", []);
+      $this->response->setCache();
+      $this->response->setTemplate("home.ejs", []);
     }
 
     // get the person Object of the email
@@ -47,7 +47,7 @@ class Service
       $credit = $person->credit;
     }
     else {
-      $response->createFromText("Su SMS no ha sido enviado porque su credito actual es insuficiente.");
+      $this->response->createFromText("Su SMS no ha sido enviado porque su credito actual es insuficiente.");
     }
 
     // get the number and clean it
@@ -57,7 +57,7 @@ class Service
 
     // message if the number passed is incorrect
     if ($parts === false) {
-      $response->createFromText("No reconocemos el numero de celular");
+      $this->response->createFromText("No reconocemos el numero de celular");
     }
 
     // get the final country code and number
@@ -69,7 +69,7 @@ class Service
 
     // message is the user has not enought credit
     if ($credit < $discount) {
-      $response->createFromText("Su credito actual es $credit y es insuficiente para enviar el SMS. Usted necesita $discount.");
+      $this->response->createFromText("Su credito actual es $credit y es insuficiente para enviar el SMS. Usted necesita $discount.");
     }
 
     // clean the text from the subject
@@ -90,7 +90,7 @@ class Service
 
     // send an error if the message text is missing
     if (empty($text)) {
-      $response->createFromText("Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
+      $this->response->createFromText("Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
     }
 
     // send the SMS
@@ -98,7 +98,7 @@ class Service
 
     // ensure the sms was sent correctly
     if (!$sent) {
-      $response->createFromText("El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
+      $this->response->createFromText("El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
     }
 
     // prepare info to be sent to the view
@@ -111,28 +111,23 @@ class Service
     ];
 
     // send the OK email
-    $response = new Response();
-    $response->setTemplate("basic.ejs", $responseContent);
+    $this->response->setTemplate("basic.ejs", $responseContent);
   }
 
   /**
    * Send the list of international codes
    *
-   * @param Request
-   *
-   * @return Response
    * @author Kuma
    */
-  public function _codigos(Request $request)
+  public function _codigos()
   {
     // get the list of codes
     $codes = $this->getCountryCodes();
     asort($codes);
 
     // create the response
-    $response = new Response();
-    $response->setCache();
-    $response->setTemplate("codes.ejs", ["codes" => $codes]);
+    $this->response->setCache();
+    $this->response->setTemplate("codes.ejs", ["codes" => $codes]);
   }
 
   /**
