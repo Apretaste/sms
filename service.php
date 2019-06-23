@@ -184,7 +184,7 @@ class Service
     curl_close($curl);
 
     $responseObj = json_decode($response);
-    if ($response->status !== 1) {
+    if ($responseObj->status !== 1) {
       return false;
     }
 
