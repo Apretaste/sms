@@ -98,7 +98,7 @@ class SmsService extends ApretasteService
     $connection = new Connection();
     $connection->deepQuery("
 			START TRANSACTION;
-			UPDATE person SET credit = credit - $discount WHERE email='$email';
+			UPDATE person SET credit = credit - $discount WHERE id = '{$this->request->person->id}';
 			INSERT INTO _sms_messages(person_id, `email`,`code`,`number`,`text`,`price`) VALUES ('{$this->request->person->email}', '{$this->request->person->email}','$code','$number','$message','$discount');
 			COMMIT;");
 
