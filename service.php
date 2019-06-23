@@ -47,9 +47,7 @@ class SmsService extends ApretasteService
     }
 
     // get the number and clean it
-    $pieces = explode(" ", $this->request->input->data->query);
-    $number = isset($pieces[0]) ? preg_replace('/[^0-9.]+/', '', $pieces[0]) : "";
-    $parts = $this->splitNumber($number);
+     $parts = $this->splitNumber($this->request->input->data->number);
 
     // message if the number passed is incorrect
     if ($parts === false) {
@@ -72,8 +70,7 @@ class SmsService extends ApretasteService
     }
 
     // clean the text from the subject
-    unset($pieces[0]);
-    $text = implode(" ", $pieces);
+    $text = $this->request->data->message;
     if (empty($text)) {
       $text = $this->request->input->data->text;
     }
