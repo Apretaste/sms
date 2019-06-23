@@ -36,6 +36,7 @@ class SmsService extends ApretasteService
     if (empty($this->request->input->data->number)) {
       $this->response->setCache();
       $this->response->setTemplate("home.ejs", []);
+      return;
     }
 
     // message is the user has zero credit
