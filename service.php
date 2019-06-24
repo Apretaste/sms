@@ -88,12 +88,29 @@ class SmsService extends ApretasteService
       $this->simpleMessage("Mensaje vac&iacute;o", "Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
     }
 
+    $code = intval($code);
+
+    if ($code != 53 || $code != 52 || $code != 1) {
+      $this->simpleMessage("SMS no enviado", "Por el momento solo se pueden enviar mensajes a Canad&aacute;, USA, M&eacute;xico y Cuba. Disculpa las molestas.");
+      return;
+    }
+
+    if ($code == 53) $code = 1; // Cuba
+    elseif ($code == 52) $code = 153; // Mexico
+    elseif ($code == 1 && array_search(intval(substr($number,0,3)), // buscar en codigos de area para detectar canada
+        [204, 226,236, 249,250,289,306,343,365,367,403,416,418,431,437,
+        438,450,506,514,519,548,579,581,587,604,613,639,647,705,
+        709,778,780,782,807,819,825,867,873,902,905]) !== false) $code = 45; // Canada
+    elseif ($code == 1) $code = 237; // USA
+
     // send the SMS
     $sent = (new SMS($number, $text, $code))->send();
 
     // ensure the sms was sent correctly
     if ($sent->code !== 200) {
-      $this->simpleMessage("SMS no enviado", "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
+      $this->simpleMessage(
+        "SMS no enviado",
+        "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
       return;
     }
 
