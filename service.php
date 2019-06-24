@@ -19,7 +19,11 @@ class SmsService extends ApretasteService
     $pool_size = $this->di()->get('config')['smsapi']['poolsize'];
 
     // check the total sent won't go over the pool
-    $totalSMSThisWeek = $this->getTotalSMSThisWeek();
+    $totalSMSThisWeek = q("
+			SELECT COUNT(id) as total
+			FROM _sms_messages
+			WHERE WEEK(sent) = WEEK(CURRENT_TIMESTAMP)")[0]->total;
+
     if ($totalSMSThisWeek >= $pool_size) {
 
       $this->simpleMessage(
@@ -89,7 +93,7 @@ class SmsService extends ApretasteService
     }
 
     $code = intval($code);
-
+    $cell_code = $code;
     if ($code != 53 && $code != 52 && $code != 1) {
       $this->simpleMessage("SMS no enviado", "Por el momento solo se pueden enviar mensajes a Canad&aacute;, USA, M&eacute;xico y Cuba. Disculpa las molestas.");
       return;
@@ -127,7 +131,7 @@ class SmsService extends ApretasteService
       "msg"        => $text,
       "bodyextra"  => $textExtra,
       "poolleft"   => $pool_size - $totalSMSThisWeek,
-      "cellnumber" => "+$code$number",
+      "cellnumber" => "(+$cell_code)$number",
     ];
 
     // send the OK email
@@ -229,27 +233,5 @@ class SmsService extends ApretasteService
   private function getCountryCodes()
   {
     return require __DIR__ . "/codes.php";
-  }
-
-  /**
-   * Get the global number of SMS sent on the current week
-   *
-   * @return Integer
-   * @author salvipascual
-   */
-  private function getTotalSMSThisWeek()
-  {
-    // get the dates for last Monday and next Sunday
-    $lastMondayTime = strtotime('last monday', strtotime('tomorrow'));
-    $firstDayOfTheWeek = date('Y-m-d H:i:s', $lastMondayTime);
-    $lastDayOfTheWeek = date('Y-m-d H:i:s', strtotime('+6 days', $lastMondayTime));
-
-    // get the number of messages from the database
-    $total = q("
-			SELECT COUNT(id) as total
-			FROM _sms_messages
-			WHERE sent BETWEEN '$firstDayOfTheWeek' AND '$lastDayOfTheWeek'");
-
-    return $total[0]->total;
   }
 }
