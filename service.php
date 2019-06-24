@@ -90,7 +90,7 @@ class SmsService extends ApretasteService
 
     // send the SMS
     $sent = (new SMS($number, $text, $code))->send();
-    
+
     // ensure the sms was sent correctly
     if ($sent->code !== 200) {
       $this->simpleMessage("SMS no enviado", "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
