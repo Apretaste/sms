@@ -13,29 +13,27 @@ class SmsService extends ApretasteService
    */
   public function _main()
   {
+    $this->response->setLayout('sms.ejs');
+
     // get the size of the pool from the configs file
     $pool_size = $this->di()->get('config')['smsapi']['poolsize'];
 
     // check the total sent won't go over the pool
     $totalSMSThisWeek = $this->getTotalSMSThisWeek();
     if ($totalSMSThisWeek >= $pool_size) {
-      $content = [
-        "header" => "Su SMS no fue enviado",
-        "icon"   => "sentiment_very_dissatisfied",
-        "text"   => "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $pool_size SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
-        "button" => ["href" => "PIROPAZO EDITAR", "caption" => "Editar perfil"],
-      ];
 
-      $this->response->setLayout('sms.ejs');
-      $this->response->setTemplate('message.ejs', $content);
+      $this->simpleMessage(
+        "Su SMS no fue enviado",
+        "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $pool_size SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
+        null, 'sentiment_very_dissatisfied');
 
       return;
     }
 
     // do not allow empty sms
     if (empty($this->request->input->data->number)) {
-      $this->response->setCache();
       $this->response->setTemplate("home.ejs", []);
+
       return;
     }
 
@@ -54,7 +52,8 @@ class SmsService extends ApretasteService
 
     // message if the number passed is incorrect
     if ($parts === false) {
-      $this->simpleMessage("No reconocemos el n&uacute;mero de celular",
+      $this->simpleMessage(
+        "No reconocemos el n&uacute;mero de celular",
         "Verifique el n&uacute;mero de celular que introdujo. Si el problema persiste contacte con el soporte t&eacute;cnico.");
 
       return;
