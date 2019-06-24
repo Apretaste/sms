@@ -90,7 +90,7 @@ class SmsService extends ApretasteService
 
     $code = intval($code);
 
-    if ($code != 53 || $code != 52 || $code != 1) {
+    if ($code != 53 && $code != 52 && $code != 1) {
       $this->simpleMessage("SMS no enviado", "Por el momento solo se pueden enviar mensajes a Canad&aacute;, USA, M&eacute;xico y Cuba. Disculpa las molestas.");
       return;
     }
