@@ -89,19 +89,20 @@ class SmsService extends ApretasteService
     }
 
     // send the SMS
-    $sent = (new SMS($number, $text))->send();
+    $sent = (new SMS($number, $text, $code))->send();
+    
+    // ensure the sms was sent correctly
+    if ($sent->code !== 200) {
+      $this->simpleMessage("SMS no enviado", "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
+      return;
+    }
+
     $message = str_replace("'", "", $text);
-    $connection = new Connection();
-    $connection->deepQuery("
+    q("
 			START TRANSACTION;
 			UPDATE person SET credit = credit - $discount WHERE id = '{$this->request->person->id}';
 			INSERT INTO _sms_messages(person_id, `email`,`code`,`number`,`text`,`price`) VALUES ('{$this->request->person->email}', '{$this->request->person->email}','$code','$number','$message','$discount');
 			COMMIT;");
-
-    // ensure the sms was sent correctly
-    if (!$sent) {
-      $this->simpleMessage("SMS no enviado", "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
-    }
 
     // prepare info to be sent to the view
     $responseContent = [
