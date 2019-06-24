@@ -1,30 +1,38 @@
 <!-- MENU -->
+<div class="container">
+    <div class="row">
+        <nav class="nav-center">
+            <div class="nav-wrapper white">
+                <!--Logo-->
+                <span class="brand-logo left hide-on-small-only">
+                    <i><b style="color:#9E100A; font-size:40px; font-family:Times;">&nbsp; P</b></i>
+                </span>
+                <!--notifications & profile-->
+                <%if(num_notifications>0) noti_icon = "notifications_active"; else noti_icon = "notifications";%>
+                <ul>
+                    <li>
+                        <a class="black-text" href="#!" onclick="apretaste.send({'command':'SMS'})">
+                            <i class="material-icons">home</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="black-text" href="#!" onclick="apretaste.send({'command':'SMS CODIGOS'})">
+                            <i class="material-icons">codes</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-<nav class="nav-center hide-on-unique" role="navigation">
-    <div class="nav-wrapper container white">
-        <!--notifications & profile-->
-        <ul class="center">
-            <li>
-                <a class="black-text" href="#!" onclick="apretaste.send({'command':'SMS'})">
-                    <i class="material-icons">home</i>
-                </a>
-            </li>
-            <li>
-                <a class="black-text" href="#!" onclick="apretaste.send({'command':'SMS CODIGOS'})">
-                    <i class="material-icons">codes</i>
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
+        <div id="modalText" class="modal">
+            <div class="modal-content">
 
-<div id="modalText" class="modal">
-    <div class="modal-content">
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+            </div>
+        </div>
 
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+        {{APP_TEMPLATE_CODE}}
     </div>
 </div>
-
-{{APP_TEMPLATE_CODE}}
