@@ -2,10 +2,10 @@
 	<div class="col s12">
 		<h1>SMS enviado correctamente</h1>
 
-		<h3>Mensaje enviado</h3>
+		<h4>Mensaje enviado</h4>
 		<p><%= msg %></p>
 
-		<h3>Destinatario</h3>
+		<h4>Destinatario</h4>
 		<p><%= cellnumber %></p>
 
 		<% if (bodyextra) { %>
@@ -13,11 +13,11 @@
 			<p><%= bodyextra %></p>
 		<% } %>
 
-		<h3>Cr&eacute;dito actual</h3>
+		<h4>Cr&eacute;dito actual</h4>
 		<p>$<%= credit %></p>
 
 
-		<h3>N&uacute;mero de SMS restantes</h3>
+		<h4>N&uacute;mero de SMS restantes</h4>
 		<%= poolleft %><br/>
 		<small>Cuando se acaben los SMS del banco, habr&aacute; que esperar al pr&oacute;ximo Lunes para enviar.</small>
 	</div>
