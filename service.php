@@ -42,7 +42,9 @@ class SmsService extends ApretasteService
     // do not allow empty sms
     $cellphoneRequired = $this->isProfileIncomplete();
 
-    if (empty($this->request->input->data->number) || $cellphoneRequired) {
+    if (empty($this->request->input->data->number)
+      || (!empty($this->request->input->data->number) &&
+          $cellphoneRequired && empty($this->request->input->data->cellphone)) {
       $this->response->setTemplate("home.ejs", [
         'cellphoneRequired' => $cellphoneRequired,
         'credit' => $this->request->person->credit
