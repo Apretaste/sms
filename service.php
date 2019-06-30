@@ -161,7 +161,10 @@ class SmsService extends ApretasteService
     } // USA
 
     // send the SMS
-    $sent = (new SMS($number, $text, $code))->send();
+    $sent = (new SMS($number,
+        str_replace(['á','é','í','ó','ú','ñ','Ñ'],['a','e','i','o','u','n','N'],
+          (substr($text,0,160))
+        ), $code))->send();
 
     // ensure the sms was sent correctly
     if (intval($sent->code) !== 200) {

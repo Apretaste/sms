@@ -42,8 +42,9 @@
 		<div class="row">
 			<div class="col l12 m12 s12">
 				<div id="input" class="input-field">
-					<textarea id="message" class="materialize-textarea"></textarea>
+					<textarea id="message" class="materialize-textarea" oninput="msgLengthValidate()" maxlength="160"></textarea>
 					<label for="message">Mensaje</label>
+					<span class="helper-text">Restante: 160</span>
 				</div>
 			</div>
 		</div>
