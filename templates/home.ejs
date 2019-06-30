@@ -10,7 +10,21 @@
 		<p>El precio de cada SMS es &sect;0.10 para mensajes internacionales, y &sect;0.05
 		   hacia Cuba. Use el bot&oacute;n de abajo para mandar un SMS.</p>
 
+		<% if (cellphoneRequired) { %>
+			<p>Para poder usar el servicio, dinos tu número de celular</p>
+			<div id="input" class="input-field">
+			<input id="cellphone" type="text">
+			<label for="cellphone">Tu n&uacute;mero de celular</label>
+		</div>
+		<% } %>
+
 		<div id="input" class="input-field">
+			 <select class="icons" id = "country">
+			  	<option value="+53" data-icon="/images/cu.png">Cuba</option>
+			  	<option value="+1" data-icon="/images/us.png">USA</option>
+			  	<option value="+1" data-icon="/images/ca.png">Canadá</option>
+				<option value="+52" data-icon="/images/mx.png">México</option>
+			</select>
 			<input id="number" type="text">
 			<label for="number">N&uacute;mero de celular</label>
 		</div>

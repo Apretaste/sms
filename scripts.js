@@ -3,8 +3,13 @@ function showToast(text) {
 }
 
 function send() {
-  var number = $('#number').val();
+  var number = $('#country').val() + $('#number').val();
   var message = $('#message').val();
+  var cellphone = '';
+
+  if ($("#cellphone").length){
+    cellphone = $("#cellphone").val();
+  }
 
   if (!number) {
     showToast('Díganos el número de celular');
@@ -19,6 +24,7 @@ function send() {
   apretaste.send({
     command: "SMS",
     data: {
+      cellphone: cellphone,
       number: number,
       message: message
     },

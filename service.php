@@ -35,8 +35,12 @@ class SmsService extends ApretasteService
     }
 
     // do not allow empty sms
-    if (empty($this->request->input->data->number)) {
-      $this->response->setTemplate("home.ejs", []);
+    $cellphoneRequired = $this->isProfileIncomplete();
+
+    if (empty($this->request->input->data->number) || $cellphoneRequired) {
+      $this->response->setTemplate("home.ejs", [
+        'cellphoneRequired' => $cellphoneRequired,
+      ]);
 
       return;
     }
@@ -96,16 +100,65 @@ class SmsService extends ApretasteService
     $cell_code = $code;
     if ($code != 53 && $code != 52 && $code != 1) {
       $this->simpleMessage("SMS no enviado", "Por el momento solo se pueden enviar mensajes a Canad&aacute;, USA, M&eacute;xico y Cuba. Disculpa las molestas.");
+
       return;
     }
 
-    if ($code == 53) $code = 1; // Cuba
-    elseif ($code == 52) $code = 153; // Mexico
-    elseif ($code == 1 && array_search(intval(substr($number,0,3)), // buscar en codigos de area para detectar canada
-        [204, 226,236, 249,250,289,306,343,365,367,403,416,418,431,437,
-        438,450,506,514,519,548,579,581,587,604,613,639,647,705,
-        709,778,780,782,807,819,825,867,873,902,905]) !== false) $code = 45; // Canada
-    elseif ($code == 1) $code = 237; // USA
+    if ($code == 53) {
+      $code = 1;
+    } // Cuba
+    elseif ($code == 52) {
+      $code = 153;
+    } // Mexico
+    elseif ($code == 1
+      && array_search(intval(substr($number, 0, 3)), // buscar en codigos de area para detectar canada
+        [
+          204,
+          226,
+          236,
+          249,
+          250,
+          289,
+          306,
+          343,
+          365,
+          367,
+          403,
+          416,
+          418,
+          431,
+          437,
+          438,
+          450,
+          506,
+          514,
+          519,
+          548,
+          579,
+          581,
+          587,
+          604,
+          613,
+          639,
+          647,
+          705,
+          709,
+          778,
+          780,
+          782,
+          807,
+          819,
+          825,
+          867,
+          873,
+          902,
+          905,
+        ]) !== false) {
+      $code = 45;
+    } // Canada
+    elseif ($code == 1) {
+      $code = 237;
+    } // USA
 
     // send the SMS
     $sent = (new SMS($number, $text, $code))->send();
@@ -115,10 +168,16 @@ class SmsService extends ApretasteService
       $this->simpleMessage(
         "SMS no enviado",
         "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
+
       return;
     }
 
     $message = str_replace("'", "", $text);
+
+    if (!empty($this->request->input->data->cellphone)) {
+      q("UPDATE person SET cellphone = '{$this->request->input->data->cellphone}' where id = '{$this->request->person->id}' and (cellphone is null or cellphone = '');");
+    }
+
     q("
 			START TRANSACTION;
 			UPDATE person SET credit = credit - $discount WHERE id = '{$this->request->person->id}';
@@ -136,22 +195,6 @@ class SmsService extends ApretasteService
 
     // send the OK email
     $this->response->setTemplate("basic.ejs", $responseContent);
-  }
-
-  /**
-   * Send the list of international codes
-   *
-   * @author Kuma
-   */
-  public function _codigos()
-  {
-    // get the list of codes
-    $codes = $this->getCountryCodes();
-    asort($codes);
-
-    // create the response
-    $this->response->setCache();
-    $this->response->setTemplate("codes.ejs", ["codes" => $codes]);
   }
 
   /**
@@ -233,5 +276,18 @@ class SmsService extends ApretasteService
   private function getCountryCodes()
   {
     return require __DIR__ . "/codes.php";
+  }
+
+  /**
+   * Check profile completion
+   *
+   * @return bool
+   */
+  private function isProfileIncomplete(): bool
+  {
+    // ensure your profile is completed
+    return (
+    empty($this->request->person->cellphone)
+    );
   }
 }
