@@ -3,7 +3,7 @@ function showToast(text) {
 }
 
 function msgLengthValidate() {
-  var msg = $('#note').val().trim();
+  var msg = $('#message').val().trim();
   if (msg.length <= 160) {
     $('.helper-text').html('Restante: ' + (160 - msg.length));
   }
