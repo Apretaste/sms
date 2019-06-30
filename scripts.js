@@ -9,6 +9,10 @@ function send() {
 
   if ($("#cellphone").length){
     cellphone = $("#cellphone").val();
+    if (!cellphone) {
+      showToast('Díganos su número de celular');
+      return false;
+    }
   }
 
   if (!number) {
