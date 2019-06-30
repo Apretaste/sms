@@ -44,7 +44,7 @@ class SmsService extends ApretasteService
 
     if (empty($this->request->input->data->number)
       || (!empty($this->request->input->data->number) &&
-          $cellphoneRequired && empty($this->request->input->data->cellphone)) {
+          $cellphoneRequired && empty($this->request->input->data->cellphone))) {
       $this->response->setTemplate("home.ejs", [
         'cellphoneRequired' => $cellphoneRequired,
         'credit' => $this->request->person->credit
