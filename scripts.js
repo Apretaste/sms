@@ -33,5 +33,5 @@ function send() {
 }
 
 $(function(){
-  $("#country").select();
+  $("#country").formSelect();
 });
