@@ -48,4 +48,11 @@ function send() {
 
 $(function(){
   $("#country").formSelect();
+
+  $("#cellphone").keypress(function(e){
+    if (e.keyCode < 48 || e.keyCode > 57) {
+      e.preventDefault();
+      return false;
+    }
+  });
 });
