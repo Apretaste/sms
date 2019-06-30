@@ -31,3 +31,7 @@ function send() {
     redirect: true
   });
 }
+
+$(function(){
+  $("#country").select();
+});
