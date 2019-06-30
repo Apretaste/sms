@@ -34,6 +34,11 @@ class SmsService extends ApretasteService
       return;
     }
 
+    // message is the user has not enought credit
+    if ($this->request->person->credit < 0.1) {
+      $this->simpleMessage("Cr&eacute;dito insuficiente", "Su credito actual es {$this->request->person->credit} y es insuficiente para enviar el SMS. Usted necesita al menos &sect;0.10.");
+    }
+
     // do not allow empty sms
     $cellphoneRequired = $this->isProfileIncomplete();
 
@@ -74,11 +79,6 @@ class SmsService extends ApretasteService
 
     // get the rate to pay
     $discount = $this->getRate($code);
-
-    // message is the user has not enought credit
-    if ($credit < $discount) {
-      $this->simpleMessage("Cr&eacute;dito insuficiente", "Su credito actual es $credit y es insuficiente para enviar el SMS. Usted necesita $discount.");
-    }
 
     // clean the text from the subject
     $text = $this->request->input->data->message;
