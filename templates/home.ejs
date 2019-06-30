@@ -3,8 +3,8 @@
 		<h1>Bienvenido a enviar SMS</h1>
 		<div class="row">
 			<div class="col l12 m12 s12">
-			<p>Envíe un SMS usando su crédito. Escoja el país, inserte el número de destino y el texto a enviar. El precio de cada SMS es &sect;0.10.</p>
-			<p><b>Usted tiene &sect;<%= credit %> de crédito y con el puede enviar hasta<%= credit/0.10 %> SMS</b>. </p>
+			<p>Envíe un SMS usando su crédito. Escoja el país, inserte el número de destino y el texto a enviar. El precio de cada SMS es &sect;<%= discount %>.</p>
+			<p><b>Usted tiene &sect;<%= credit %> de crédito y con el puede enviar hasta<%= credit/discount %> SMS</b>. </p>
 
 			<% if (cellphoneRequired) { %>
 				<p>Para poder usar el servicio, dinos tu número de celular:</p>

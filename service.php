@@ -46,6 +46,7 @@ class SmsService extends ApretasteService
       || (!empty($this->request->input->data->number) &&
           $cellphoneRequired && empty($this->request->input->data->cellphone))) {
       $this->response->setTemplate("home.ejs", [
+        'discount' => 0.05,
         'cellphoneRequired' => $cellphoneRequired,
         'credit' => $this->request->person->credit
       ]);
@@ -214,10 +215,10 @@ class SmsService extends ApretasteService
   {
     $code = $code * 1;
     if ($code == 53) {
-      return 0.1;
+      return 0.05;
     }
 
-    return 0.1;
+    return 0.05;
   }
 
   /**
