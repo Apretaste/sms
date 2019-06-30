@@ -8,7 +8,9 @@
 			   y el texto a enviar. Para mandar un SMS internacional, el n&uacute;mero debe
 			   comenzar por el c&oacute;digo del pa&iacute;s.</p>
 
-			<p>El precio de cada SMS es &sect;0.10. Use el bot&oacute;n de abajo para mandar un SMS.</p>
+			<p>El precio de cada SMS es &sect;0.10. <b>Tu crédito es de &sect;<%= credit %> y con el
+			puedes mandar <%= credit/0.10 %> SMS</b>.
+			   Usa el bot&oacute;n de abajo para mandar un SMS.</p>
 
 			<% if (cellphoneRequired) { %>
 				<p>Para poder usar el servicio, dinos tu número de celular</p>
