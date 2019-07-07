@@ -188,7 +188,7 @@ class SmsService extends ApretasteService
     q("
 			START TRANSACTION;
 			UPDATE person SET credit = credit - $discount WHERE id = '{$this->request->person->id}';
-			INSERT INTO _sms_messages(person_id, `email`,`code`,`number`,`text`,`price`) VALUES ('{$this->request->person->email}', '{$this->request->person->email}','$code','$number','$message','$discount');
+			INSERT INTO _sms_messages(person_id, `email`,`code`,`number`,`text`,`price`) VALUES ('{$this->request->person->id}','{$this->request->person->email}', '{$this->request->person->email}','$code','$number','$message','$discount');
 			COMMIT;");
 
     // prepare info to be sent to the view
