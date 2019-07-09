@@ -186,7 +186,7 @@ class SmsService extends ApretasteService
     }
 
     Utils::addCredit($discount*-1, 'SMS', $this->request->person->id);
-    q("INSERT INTO _sms_messages(person_id, `email`,`code`,`number`,`text`,`price`) VALUES ('{$this->request->person->id}','{$this->request->person->email}', '{$this->request->person->email}','$code','$number','$message','$discount');");
+    q("INSERT INTO _sms_messages(person_id, `email`,`code`,`number`,`text`,`price`) VALUES ('{$this->request->person->id}','{$this->request->person->email}','$code','$number','$message','$discount');");
 
     // prepare info to be sent to the view
     $responseContent = [
