@@ -55,7 +55,7 @@ $(function(){
 
       if ($("#cellphone").val().length >= 10)
       {
-          $("#cell-number-section").show();
+          $("#cell-number-section").show().removeClass('hide');
       } else {
           $("#cell-number-section").hide();
       }
