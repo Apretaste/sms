@@ -290,8 +290,6 @@ class SmsService extends ApretasteService
   private function isProfileIncomplete(): bool
   {
     // ensure your profile is completed
-    return (
-    empty($this->request->person->cellphone)
-    );
+    return empty($this->request->person->cellphone.'');
   }
 }
