@@ -48,7 +48,8 @@ class SmsService extends ApretasteService
       $this->response->setTemplate("home.ejs", [
         'discount' => 0.05,
         'cellphoneRequired' => $cellphoneRequired,
-        'credit' => $this->request->person->credit
+        'credit' => $this->request->person->credit,
+        'person' => $this->request->person
       ]);
 
       return;
