@@ -1,10 +1,10 @@
 <div class="row">
 	<div class="col s12">
-		<h1>Bienvenido a enviar SMS</h1>
+		<h1>Enviar SMS</h1>
 		<div class="row">
 			<div class="col l12 m12 s12">
 			<p>Envíe un SMS usando su crédito. Escoja el país, inserte el número de destino y el texto a enviar. El precio de cada SMS es &sect;<%= discount %>.</p>
-			<p><b>Usted tiene &sect;<%= credit %> de crédito y con el puede enviar hasta<%= credit/discount %> SMS</b>. </p>
+			<p><b>Usted tiene &sect;<%= credit %> de crédito y con el puede enviar hasta <%= credit/discount %> SMS</b>. </p>
 
 			<% if (cellphoneRequired) { %>
 				<p>Para poder usar el servicio, dinos tu número de celular:</p>
@@ -16,40 +16,41 @@
 			<% } %>
 			</div>
 		</div>
+        <div id = "cell-number-section" class="section <% if (cellphoneRequired) {%> hide <% } %>">
+            <!-- cell number -->
+            <div class="row">
+                <div class="input-field col l5 m5 s5">
+                    <select class="icons" id = "country">
+                        <option value="+53" data-icon="/images/flags/cu.png" class="right">+53</option>
+                        <option value="+1" data-icon="/images/flags/us.png" class="right">+1</option>
+                        <option value="+1" data-icon="/images/flags/ca.png" class="right">+1</option>
+                        <option value="+52" data-icon="/images/flags/mx.png" class="right">+52</option>
+                    </select>
+                </div>
+                <div class="col l7 m7 s7">
+                    <div id="input" class="input-field">
+                        <i class="material-icons prefix">phone</i>
+                        <input id="number" type="text" maxlength="10">
+                        <label for="number">N&uacute;mero de celular</label>
+                    </div>
+                </div>
+            </div>
 
-		<!-- cell number -->
-		<div class="row">
-			<div class="input-field col l5 m5 s5">
-				<select class="icons" id = "country">
-					<option value="+53" data-icon="/images/flags/cu.png" class="right">+53</option>
-					<option value="+1" data-icon="/images/flags/us.png" class="right">+1</option>
-					<option value="+1" data-icon="/images/flags/ca.png" class="right">+1</option>
-					<option value="+52" data-icon="/images/flags/mx.png" class="right">+52</option>
-				</select>
-			</div>
-			<div class="col l7 m7 s7">
-				<div id="input" class="input-field">
-					<i class="material-icons prefix">phone</i>
-					<input id="number" type="text" maxlength="10">
-					<label for="number">N&uacute;mero de celular</label>
-				</div>
-			</div>
-		</div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div id="input" class="input-field">
+                        <i class="material-icons prefix">mode_edit</i>
+                        <textarea id="message" class="materialize-textarea" oninput="msgLengthValidate()" maxlength="160"></textarea>
+                        <label for="message">Mensaje</label>
+                        <span class="helper-text">Restante: 160</span>
+                    </div>
+                </div>
+            </div>
 
-		<div class="row">
-			<div class="col l12 m12 s12">
-				<div id="input" class="input-field">
-					<i class="material-icons prefix">mode_edit</i>
-					<textarea id="message" class="materialize-textarea" oninput="msgLengthValidate()" maxlength="160"></textarea>
-					<label for="message">Mensaje</label>
-					<span class="helper-text">Restante: 160</span>
-				</div>
-			</div>
-		</div>
-
-		<!-- SUBMIT -->
-		<div class="fixed-action-btn">
-			<a class="btn-floating btn-large waves-effect waves-light green" href="#!" onclick="send()"><i class="material-icons">send</i></a>
-		</div>
+            <!-- SUBMIT -->
+            <div class="fixed-action-btn">
+                <a class="btn-floating btn-large waves-effect waves-light green" href="#!" onclick="send()"><i class="material-icons">send</i></a>
+            </div>
+        </div>
 	</div>
 </div>

@@ -52,9 +52,19 @@ $(function(){
   $("#cellphone").keypress(function(e){
     if (e.keyCode < 48 || e.keyCode > 57) {
       e.preventDefault();
+
+      if ($("#cellphone").val().length >= 10)
+      {
+          $("#cell-number-section").show();
+      } else {
+          $("#cell-number-section").hide();
+      }
+
       return false;
     }
   });
+
+
   $("#number").keypress(function(e){
     if (e.keyCode < 48 || e.keyCode > 57) {
       e.preventDefault();
