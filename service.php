@@ -34,7 +34,7 @@ class SmsService extends ApretasteService
             return;
         }
 
-        // message is the user has not enought credit
+        // message is the user has not enough credit
         if ($this->request->person->credit < 0.1) {
             $this->simpleMessage("Cr&eacute;dito insuficiente", "Su credito actual es {$this->request->person->credit} y es insuficiente para enviar el SMS. Usted necesita al menos &sect;0.10.");
         }
@@ -46,10 +46,8 @@ class SmsService extends ApretasteService
             return;
         }
 
-
-        if (empty($this->request->input->data->number)
-            || !empty($this->request->input->data->number)) {
-            $this->response->setTemplate("home.ejs", [
+        if (empty($this->request->input->data->number)) {
+            $this->response->setTemplate('home.ejs', [
                 'discount' => 0.05,
                 'credit'   => $this->request->person->credit,
                 'person'   => $this->request->person,
