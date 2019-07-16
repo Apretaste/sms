@@ -31,15 +31,17 @@ function sendCellphone() {
             showToast('Díganos su número de celular');
             return false;
         }
-    }
 
-    apretaste.send({
-        command: "SMS_PROFILE",
-        data: {
-            cellphone: cellphone
-        },
-        redirect: true
-    });
+        apretaste.send({
+            command: "SMS_PROFILE",
+            data: {
+                cellphone: cellphone
+            },
+            redirect: true
+        });
+
+    } else
+        showToast('Escribe un numero de celuar');
 }
 
 function send() {
@@ -75,16 +77,7 @@ $(function () {
                 e.preventDefault();
                 return false;
             }
-        }).keyup(function (e) {
-            e.preventDefault();
-        if ($("#cellphone").val().length >= 8) {
-            $("#cell-number-section").show().removeClass('hide');
-        }
-        else {
-            $("#cell-number-section").hide();
-        }
-        return true;
-    });
+        });
 
     $("#number").keypress(function (e) {
         if (e.keyCode < 48 || e.keyCode > 57) {
