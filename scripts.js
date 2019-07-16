@@ -18,7 +18,7 @@ function showToast(text) {
 
 function msgLengthValidateCellphone() {
     var msg = $('#cellphone').val().trim();
-    if (msg.length <= 8) {
+    if (msg.length < 8) {
         $('.helper-text-cellphone').html('Al menos ' + (8 - msg.length) + ' d&iacute;gitos');
     }
     else {
