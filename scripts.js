@@ -17,9 +17,9 @@ function showToast(text) {
 }
 
 function msgLengthValidateCellphone() {
-    var msg = $('#message').val().trim();
+    var msg = $('#cellphone').val().trim();
     if (msg.length <= 8) {
-        $('.helper-text-cellphone').html('Al menos' + (8 - msg.length) + 'd&iacute;gitos');
+        $('.helper-text-cellphone').html('Al menos ' + (8 - msg.length) + ' d&iacute;gitos');
     }
     else {
         $('.helper-text-cellphone').html('');
