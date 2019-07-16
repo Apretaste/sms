@@ -23,25 +23,19 @@ function msgLengthValidateCellphone() {
 }
 
 function sendCellphone() {
-    var cellphone = '';
+    var cellphone = $("#cellphone").val();
+    if (!cellphone) {
+        showToast('Díganos su número de celular');
+        return false;
+    }
 
-    if ($("#cellphone").length) {
-        cellphone = $("#cellphone").val();
-        if (!cellphone) {
-            showToast('Díganos su número de celular');
-            return false;
-        }
-
-        apretaste.send({
-            command: "SMS_PROFILE",
-            data: {
-                cellphone: cellphone
-            },
-            redirect: true
-        });
-
-    } else
-        showToast('Escribe un numero de celuar');
+    apretaste.send({
+        command: "SMS_PROFILE",
+        data: {
+            cellphone: cellphone
+        },
+        redirect: true
+    });
 }
 
 function send() {
