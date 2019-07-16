@@ -56,12 +56,14 @@ $(function () {
                 return false;
             }
         }).keyup(function (e) {
-        if ($("#cellphone").val().length >= 10) {
+            e.preventDefault();
+        if ($("#cellphone").val().length >= 9) {
             $("#cell-number-section").show().removeClass('hide');
         }
         else {
             $("#cell-number-section").hide();
         }
+        return true;
     });
 
     $("#number").keypress(function (e) {
