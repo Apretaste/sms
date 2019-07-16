@@ -1,7 +1,3 @@
-function showToast(text) {
-    M.toast({html: text});
-}
-
 function msgLengthValidate() {
     var msg = $('#message').val().trim();
     if (msg.length <= 160) {
