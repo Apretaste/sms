@@ -12,6 +12,21 @@ function msgLengthValidate() {
     }
 }
 
+function showToast(text) {
+    M.toast({html: text});
+}
+
+function msgLengthValidateCellphone() {
+    var msg = $('#message').val().trim();
+    if (msg.length <= 8) {
+        $('.helper-text-cellphone').html('Al menos' + (8 - msg.length) + 'd&iacute;gitos');
+    }
+    else {
+        $('.helper-text-cellphone').html('');
+    }
+}
+
+
 function send() {
     var number = $('#country').val() + $('#number').val();
     var message = $('#message').val();
@@ -57,7 +72,7 @@ $(function () {
             }
         }).keyup(function (e) {
             e.preventDefault();
-        if ($("#cellphone").val().length >= 9) {
+        if ($("#cellphone").val().length >= 8) {
             $("#cell-number-section").show().removeClass('hide');
         }
         else {
