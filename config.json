@@ -1,6 +1,6 @@
 {
 	"name": "sms",
-	"version": "3",
+	"version": "4",
 	"description": "Envía un SMS a cualquier celular en Cuba y el mundo.",
 	"category": "comunicaciones",
 	"creator": "salvi@apretaste.org",
