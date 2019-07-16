@@ -5,19 +5,9 @@
 			<div class="col l12 m12 s12">
 			<p>Envíe un SMS usando su crédito. Escoja el país, inserte el número de destino y el texto a enviar. El precio de cada SMS es &sect;<%= discount %>.</p>
 			<p><b>Usted tiene &sect;<%= credit %> de crédito y con el puede enviar hasta <%= credit/discount %> SMS</b>. </p>
-
-			<% if (cellphoneRequired) { %>
-				<p>Para poder usar el servicio, dinos tu número de celular:</p>
-				<div id="input" class="input-field">
-					<i class="material-icons prefix">phone</i>
-					<input id="cellphone" type="text" maxlength="10" oninput="msgLengthValidateCellphone()">
-					<label for="cellphone">Tu n&uacute;mero de celular</label>
-                    <span class="helper-text-cellphone">Al menos 8 d&iacute;gitos</span>
-				</div>
-			<% } %>
 			</div>
 		</div>
-        <div id = "cell-number-section" class="section <% if (cellphoneRequired) {%> hide <% } %>">
+        <div id = "cell-number-section" class="section">
             <!-- cell number -->
             <div class="row">
                 <div class="input-field col" style="width:100px;">

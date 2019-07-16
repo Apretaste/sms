@@ -22,10 +22,7 @@ function msgLengthValidateCellphone() {
     }
 }
 
-
-function send() {
-    var number = $('#country').val() + $('#number').val();
-    var message = $('#message').val();
+function sendCellphone() {
     var cellphone = '';
 
     if ($("#cellphone").length) {
@@ -35,6 +32,19 @@ function send() {
             return false;
         }
     }
+
+    apretaste.send({
+        command: "SMS_PROFILE",
+        data: {
+            cellphone: cellphone
+        },
+        redirect: true
+    });
+}
+
+function send() {
+    var number = $('#country').val() + $('#number').val();
+    var message = $('#message').val();
 
     if (!number) {
         showToast('Díganos el número de celular');
@@ -49,7 +59,6 @@ function send() {
     apretaste.send({
         command: "SMS",
         data: {
-            cellphone: cellphone,
             number: number,
             message: message
         },
