@@ -16,6 +16,8 @@ class SmsService extends ApretasteService
      */
     public function _main()
     {
+        $credit = 0;
+
         $this->response->setLayout('sms.ejs');
 
         // get the size of the pool from the configs file
@@ -27,7 +29,7 @@ class SmsService extends ApretasteService
 
         if ($totalSMSThisWeek >= $pool_size) {
             $this->simpleMessage(
-                "Su SMS no fue enviado",
+                'Su SMS no fue enviado',
                 "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $pool_size SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
                 null, 'sentiment_very_dissatisfied');
 
@@ -36,7 +38,7 @@ class SmsService extends ApretasteService
 
         // message is the user has not enough credit
         if ($this->request->person->credit < 0.1) {
-            $this->simpleMessage("Cr&eacute;dito insuficiente", "Su credito actual es {$this->request->person->credit} y es insuficiente para enviar el SMS. Usted necesita al menos &sect;0.10.");
+            $this->simpleMessage('Cr&eacute;dito insuficiente', "Su credito actual es {$this->request->person->credit} y es insuficiente para enviar el SMS. Usted necesita al menos &sect;0.10.");
         }
 
         // do not allow empty sms
@@ -60,7 +62,7 @@ class SmsService extends ApretasteService
         if (isset($this->request->person->credit)) {
             $credit = $this->request->person->credit;
         } else {
-            $this->simpleMessage("SMS no enviado", "Su SMS no ha sido enviado porque su credito actual es insuficiente.");
+            $this->simpleMessage('SMS no enviado', 'Su SMS no ha sido enviado porque su credito actual es insuficiente.');
 
             return;
         }
@@ -71,8 +73,8 @@ class SmsService extends ApretasteService
         // message if the number passed is incorrect
         if ($parts === false) {
             $this->simpleMessage(
-                "No reconocemos el n&uacute;mero de celular",
-                "Verifique el n&uacute;mero de celular que introdujo. Si el problema persiste contacte con el soporte t&eacute;cnico.");
+                'No reconocemos el n&uacute;mero de celular',
+                'Verifique el n&uacute;mero de celular que introdujo. Si el problema persiste contacte con el soporte t&eacute;cnico.');
 
             return;
         }
@@ -86,26 +88,26 @@ class SmsService extends ApretasteService
 
         // clean the text from the subject
         $text = $this->request->input->data->message;
-        $text = str_replace("\n", " ", $text);
-        $text = str_replace("\r", " ", $text);
-        $text = str_replace("  ", " ", $text);
+        $text = str_replace("\n", ' ', $text);
+        $text = str_replace("\r", ' ', $text);
+        $text = str_replace('  ', ' ', $text);
         $text = quoted_printable_decode($text);
         $text = trim(strip_tags($text));
-        $text = str_replace("  ", " ", $text);
-        $text = str_replace("--", "-", $text);
+        $text = str_replace('  ', ' ', $text);
+        $text = str_replace('--', '-', $text);
         $textExtra = substr($text, 160); // the rest of the message
         $text = substr(trim($text), 0, 160); // split message
 
         // send an error if the message text is missing
         if (empty($text)) {
-            $this->simpleMessage("Mensaje vac&iacute;o", "Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
+            $this->simpleMessage('Mensaje vac&iacute;o', 'Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono');
             return;
         }
 
         $code = (int)$code;
         $cell_code = $code;
         if ($code != 53 && $code != 52 && $code != 1) {
-            $this->simpleMessage("SMS no enviado", "Por el momento solo se pueden enviar mensajes a Canad&aacute;, USA, M&eacute;xico y Cuba. Disculpa las molestas.");
+            $this->simpleMessage('SMS no enviado', 'Por el momento solo se pueden enviar mensajes a Canad&aacute;, USA, M&eacute;xico y Cuba. Disculpa las molestas.');
 
             return;
         }
@@ -174,13 +176,13 @@ class SmsService extends ApretasteService
         // ensure the sms was sent correctly
         if ((int)$sent->code !== 200) {
             $this->simpleMessage(
-                "SMS no enviado",
-                "El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.");
+                'SMS no enviado',
+                'El SMS no se pudo enviar debido a problemas t&eacute;nicos. Int&eacute;ntelo m&aacute;s tarde o contacte al soporte t&eacute;nico.');
 
             return;
         }
 
-        $message = str_replace("'", "", $text);
+        $message = str_replace("'", '', $text);
 
         //Utils::addCredit($discount * -1, 'SMS', $this->request->person->id);
         Money::transfer($this->request->person->id, Money::BANK, (float) $discount, 'SMS');
@@ -189,15 +191,15 @@ class SmsService extends ApretasteService
 
         // prepare info to be sent to the view
         $responseContent = [
-            "credit"     => $credit - $discount,
-            "msg"        => $text,
-            "bodyextra"  => $textExtra,
-            "poolleft"   => $pool_size - $totalSMSThisWeek,
-            "cellnumber" => "(+$cell_code)$number",
+            'credit'     => number_format($credit - $discount,2),
+            'msg'        => $text,
+            'bodyextra'  => $textExtra,
+            'poolleft'   => $pool_size - $totalSMSThisWeek,
+            'cellnumber' => "(+$cell_code)$number",
         ];
 
         // send the OK email
-        $this->response->setTemplate("basic.ejs", $responseContent);
+        $this->response->setTemplate('basic.ejs', $responseContent);
     }
 
     /**
@@ -289,7 +291,7 @@ class SmsService extends ApretasteService
      */
     private function getCountryCodes()
     {
-        return require __DIR__."/codes.php";
+        return require __DIR__.'/codes.php';
     }
 
     /**
