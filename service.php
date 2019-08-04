@@ -99,6 +99,7 @@ class SmsService extends ApretasteService
         // send an error if the message text is missing
         if (empty($text)) {
             $this->simpleMessage("Mensaje vac&iacute;o", "Usted no escribio el text del SMS que quiere enviar. Por favor escriba el texto del mensaje seguido del numero de telefono");
+            return;
         }
 
         $code = (int)$code;
