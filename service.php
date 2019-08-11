@@ -42,11 +42,11 @@ class SmsService extends ApretasteService
         }
 
         // do not allow empty sms
-        if ($this->isProfileIncomplete()) {
+       /* if ($this->isProfileIncomplete()) {
             $this->response->setTemplate('cellphone.ejs');
 
             return;
-        }
+        }*/
 
         if (empty($this->request->input->data->number)) {
             $this->response->setTemplate('home.ejs', [
