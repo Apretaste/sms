@@ -4,7 +4,7 @@
 		<div class="row">
 			<div class="col l12 m12 s12">
 			<p>Envíe un SMS usando su crédito. Escoja el país, inserte el número de destino y el texto a enviar. El precio de cada SMS es &sect;<%= discount %>.</p>
-			<p><b>Usted tiene &sect;<%= credit %> de crédito y con el puede enviar hasta <%= credit/discount %> SMS</b>. </p>
+			<p><b>Usted tiene &sect;<%= credit %> de crédito y con el puede enviar hasta <%= Math.floor(credit/discount) %> SMS</b>. </p>
 			</div>
 		</div>
         <div id = "cell-number-section" class="section">
