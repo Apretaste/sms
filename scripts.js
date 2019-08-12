@@ -1,10 +1,12 @@
 function msgLengthValidate() {
     var msg = $('#message').val().trim();
     if (msg.length <= 160) {
-        $('.helper-text').html('Restante: ' + (160 - msg.length));
+        $('.helper-text').html(msg.length + '/160');
     }
     else {
         $('.helper-text').html('Limite excedido');
+        $('#message').css('color', 'red');
+        showToast('El mensaje no puede exceder los 160 caracteres.');
     }
 }
 
@@ -18,7 +20,6 @@ function msgLengthValidateNumber() {
     if (msg.length < 8) {
         helper.html('Al menos ' + (8 - msg.length) + ' d&iacute;gitos');
     } else helper.html('');
-
 }
 
 function sendCellphone() {
@@ -43,6 +44,11 @@ function send() {
 
     if (number.length < 8) {
         showToast('Díganos el número de celular. Debe tener al menos 8 d&iacute;gitos.');
+        return false;
+    }
+
+    if (message.length > 160) {
+        showToast('El mensaje no debe exceder los 160 caracteres');
         return false;
     }
 
