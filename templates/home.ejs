@@ -21,8 +21,9 @@
                 <div class="col l7 m7 s7">
                     <div id="input" class="input-field">
                         <i class="material-icons prefix">phone</i>
-                        <input id="number" type="text" maxlength="15">
+                        <input id="number" type="text" maxlength="15" oninput="msgLengthValidateNumber()">
                         <label for="number">N&uacute;mero de celular</label>
+                        <span class="helper-text-number">Restante: 15</span>
                     </div>
                 </div>
             </div>
