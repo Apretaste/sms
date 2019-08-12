@@ -14,12 +14,15 @@ function showToast(text) {
 
 function msgLengthValidateCellphone() {
     var msg = $('#cellphone').val().trim();
+    var helper = $('.helper-text-cellphone');
     if (msg.length < 8) {
-        $('.helper-text-cellphone').html('Al menos ' + (8 - msg.length) + ' d&iacute;gitos');
+        helper.html('Al menos ' + (8 - msg.length) + ' d&iacute;gitos');
+        return false;
     }
-    else {
-        $('.helper-text-cellphone').html('');
-    }
+
+    helper.html('');
+    return true;
+
 }
 
 function sendCellphone() {
@@ -39,13 +42,15 @@ function sendCellphone() {
 }
 
 function send() {
-    var number = $('#country').val() + $('#number').val();
+    var number = $('#number').val();
     var message = $('#message').val();
 
-    if (!number) {
-        showToast('Díganos el número de celular');
+    if (!number || ! msgLengthValidateCellphone()) {
+        showToast('Díganos el número de celular. Debe tener al menos 8 d&iacute;gitos.');
         return false;
     }
+
+    number = $('#country').val() + number;
 
     if (!message) {
         showToast('Escriba un mensaje');
