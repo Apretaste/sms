@@ -31,6 +31,7 @@ function msgLengthValidateNumber() {
   }
   else {
     helper.html('');
+    $('#number').removeClass('invalid');
   }
 }
 
@@ -56,6 +57,7 @@ function send() {
 
   if (number.length < 8) {
     showToast('Díganos el número de celular. Debe tener al menos 8 d&iacute;gitos.');
+    $('#number').addClass('invalid');
     return false;
   }
 
