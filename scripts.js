@@ -30,7 +30,7 @@ function msgLengthValidateNumber() {
   if (msg.length < 8) {
     numberControl.css('color','red');
     numberControl.addClass('invalid');
-    helper.html('Al menos ' + (8 - msg.length) + ' d&iacute;gitos');
+    helper.html('Al menos 8 d&iacute;gitos');
   }
   else {
     helper.html('');
