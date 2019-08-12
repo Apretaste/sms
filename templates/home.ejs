@@ -22,7 +22,7 @@
                 <div class="col l7 m7 s7">
                     <div id="input" class="input-field">
                         <i class="material-icons prefix">phone</i>
-                        <input id="number" type="text" maxlength="15" oninput="msgLengthValidateNumber()">
+                        <input id="number" type="text" maxlength="15" oninput="msgLengthValidateNumber()" class="validate">
                         <label for="number">N&uacute;mero de celular</label>
                         <span class="helper-text-number">Restante: 15</span>
                     </div>
@@ -33,7 +33,7 @@
                 <div class="col l12 m12 s12">
                     <div id="input" class="input-field">
                         <i class="material-icons prefix">mode_edit</i>
-                        <textarea id="message" class="materialize-textarea" oninput="msgLengthValidate()" maxlength="160"></textarea>
+                        <textarea id="message" class="materialize-textarea validate" oninput="msgLengthValidate()"></textarea>
                         <label for="message">Mensaje</label>
                         <span class="helper-text">0/160</span>
                     </div>

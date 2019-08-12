@@ -1,11 +1,15 @@
 function msgLengthValidate() {
-    var msg = $('#message').val().trim();
+    var msgControl = $('#message');
+    var msg = msgControl.val().trim();
     if (msg.length <= 160) {
         $('.helper-text').html(msg.length + '/160');
+        msgControl.addClass('valid');
+        msgControl.removeClass('invalid');
     }
     else {
         $('.helper-text').html('Limite excedido');
-        $('#message').css('color', 'red');
+        msgControl.addClass('invalid');
+        msgControl.removeClass('valid');
         showToast('El mensaje no puede exceder los 160 caracteres.');
     }
 }
