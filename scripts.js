@@ -24,14 +24,18 @@ function showToast(text) {
 }
 
 function msgLengthValidateNumber() {
-  var msg = $('#number').val().trim();
+  var numberControl = $('#number');
+  var msg = numberControl.val().trim();
   var helper = $('.helper-text-number');
   if (msg.length < 8) {
+    numberControl.css('color','red');
+    numberControl.addClass('invalid');
     helper.html('Al menos ' + (8 - msg.length) + ' d&iacute;gitos');
   }
   else {
     helper.html('');
-    $('#number').removeClass('invalid');
+    numberControl.css('color','black');
+    numberControl.removeClass('invalid');
   }
 }
 
@@ -52,12 +56,14 @@ function sendCellphone() {
 }
 
 function send() {
-  var number = $('#number').val();
+  var numberControl = $('#number');
+  var number = numberControl.val();
   var message = $('#message').val();
 
   if (number.length < 8) {
     showToast('Díganos el número de celular. Debe tener al menos 8 d&iacute;gitos.');
-    $('#number').addClass('invalid');
+    numberControl.addClass('invalid');
+    numberControl.css('color','red');
     return false;
   }
 
