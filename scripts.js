@@ -12,7 +12,9 @@ function msgLengthValidate() {
     msgControl.css('color', 'red');
     msgControl.addClass('invalid');
     msgControl.removeClass('valid');
-    showToast('El mensaje no puede exceder los 160 caracteres.');
+    if ($(".toast").length === 0){
+      showToast('El mensaje no puede exceder los 160 caracteres.');
+    }
   }
 }
 
