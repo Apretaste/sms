@@ -39,6 +39,7 @@ class SmsService extends ApretasteService
         // message is the user has not enough credit
         if ($this->request->person->credit < 0.1) {
             $this->simpleMessage('Cr&eacute;dito insuficiente', "Su credito actual es {$this->request->person->credit} y es insuficiente para enviar el SMS. Usted necesita al menos &sect;0.10.");
+            return;
         }
 
         // do not allow empty sms
