@@ -31,7 +31,10 @@ class SmsService extends ApretasteService
             $this->simpleMessage(
                 'Su SMS no fue enviado',
                 "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $pool_size SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
-                null, 'sentiment_very_dissatisfied');
+                [
+                    "href"    => 'SERVICIOS',
+                    "caption" => "Regresar",
+                ], 'sentiment_very_dissatisfied');
 
             return;
         }
