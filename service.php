@@ -25,7 +25,7 @@ class SmsService extends ApretasteService
 
         // check the total sent won't go over the pool
         $totalSMSThisWeek = q('SELECT COUNT(id) as total FROM _sms_messages
-		WHERE WEEK(sent) = WEEK(CURRENT_TIMESTAMP)')[0]->total;
+		WHERE DATE(sent) = CURRENT_DATE')[0]->total;
 
         if ($totalSMSThisWeek >= $pool_size) {
             $this->simpleMessage(
