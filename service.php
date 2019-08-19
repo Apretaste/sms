@@ -30,7 +30,7 @@ class SmsService extends ApretasteService
         if ($totalSMSThisWeek >= $pool_size) {
             $this->simpleMessage(
                 'Su SMS no fue enviado',
-                "Como seguramente conoce, en Apretaste regalamos cientos de créditos, pero pagamos por cada SMS que enviado. Para ofrecer este servicio gratuitamente, tenemos que poner un límite de $pool_size SMS diarios. Por favor, espere a mañana para seguir manando SMS. Disculpe las molestias.",
+                "Tenemos un l&iacute;mite diario de $pool_size SMS. Por favor, espere a mañana para seguir usando este servicio. Disculpe las molestias.",
                 [
                     "href"    => 'SERVICIOS',
                     "caption" => "Regresar",
