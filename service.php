@@ -31,10 +31,7 @@ class SmsService extends ApretasteService
             $this->simpleMessage(
                 'Su SMS no fue enviado',
                 "Tenemos un l&iacute;mite diario de $pool_size SMS. Por favor, espere a mañana para seguir usando este servicio. Disculpe las molestias.",
-                [
-                    "href"    => 'SERVICIOS',
-                    "caption" => "Regresar",
-                ], 'sentiment_very_dissatisfied');
+                false, 'sentiment_very_dissatisfied');
 
             return;
         }
