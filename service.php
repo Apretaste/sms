@@ -4,7 +4,6 @@ use Apretaste\Money;
 
 class SmsService extends ApretasteService
 {
-
     /**
      * Function executed when the service is called
      *
@@ -16,6 +15,11 @@ class SmsService extends ApretasteService
      */
     public function _main()
     {
+        // SERVICE DEACTIVATED
+        return $this->response->setTemplate('message.ejs');
+
+
+
         $credit = 0;
 
         $this->response->setLayout('sms.ejs');
@@ -208,6 +212,11 @@ class SmsService extends ApretasteService
      */
     public function _profile()
     {
+        // SERVICE DEACTIVATED
+        return $this->response->setTemplate('message.ejs');
+
+
+
         if (!empty($this->request->input->data->cellphone)) {
             q("UPDATE person SET cellphone = '{$this->request->input->data->cellphone}' where id = '{$this->request->person->id}' and (cellphone is null or cellphone = '');");
         }
